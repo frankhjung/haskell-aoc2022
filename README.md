@@ -17,11 +17,15 @@ cd Day01
 make
 ```
 
-The default make target will perform: `check`, `build` and `test`
+As a single command:
+
+```bash
+day=DayNN; stack new ${day} template/day.hsfiles; cd ${day}; make
+```
+
+The default make target will perform: `check`, `build`, `test` and `exec`
 
 Other build targets are:
 
-* `bench`    - run performance benchmarks
-* `doc`      - generate Haddock documentation
 * `clean`    - clean generated files
 * `cleanall` - purge all generated files
