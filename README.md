@@ -2,7 +2,10 @@
 
 Copyright © 2022 Frank H Jung
 
-* [Day 01 - Calorie Counting](day01/README.md)
+* [Day 1 - Calorie Counting](Day01/README.md)
+* [Day 2 - Rock Paper Scissors](Day02/README.md)
+* [Day 3 - Rucksack Reorganisation](Day03/README.md)
+* [Day 4 - Camp Cleanup](Day04/README.md)
 
 ## Create Advent of Code Day from Template
 

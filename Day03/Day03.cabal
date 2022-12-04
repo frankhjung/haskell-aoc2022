@@ -1,6 +1,6 @@
 cabal-version:        3.0
 
-name:                 Day02
+name:                 Day03
 version:              1
 synopsis:             Advent of Code 2022
 description:          Haskell solutions for Advent of Code 2022
@@ -19,6 +19,7 @@ library
   ghc-options:        -Wall
   exposed-modules:    Solve
   build-depends:      base >= 4 && < 5
+                    , split >= 0.2 && < 0.3
 
 executable            main
   hs-source-dirs:     .
@@ -28,6 +29,7 @@ executable            main
   ghc-options:        -Wall
   other-modules:      Solve
   build-depends:      base
+                    , split >= 0.2 && < 0.3
 
 test-suite            test
   hs-source-dirs:     test
@@ -39,3 +41,4 @@ test-suite            test
   other-modules:      Solve
   build-depends:      base
                     , hspec >= 2.7 && < 2.9
+                    , split >= 0.2 && < 0.3

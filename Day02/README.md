@@ -1,8 +1,8 @@
 # Advent of Code 2022 - Day 2
 
-[Day 2](https://adventofcode.com/2022/day/2)
+[Day 2 - Rock Paper Scissors](https://adventofcode.com/2022/day/2)
 
-## Day 2 - Part 1
+## Part 1
 
 What would your total score be if everything goes exactly according to your
 strategy guide?
@@ -40,7 +40,7 @@ Final tally:
 
   8 + 1 + 6 = 15
 
-## Day 2 - Part 2
+## Part 2
 
 > Anyway, the second column says how the round needs to end: X means you need
 > to lose, Y means you need to end the round in a draw, and Z means you need to

@@ -6,3 +6,4 @@ packages: ['.']
 allow-newer: true
 extra-deps:
   - hspec-2.8.5
+  - split-0.2.3.4
