@@ -71,10 +71,16 @@ In how many assignment pairs does one range fully contain the other?
 ## Notes
 
 ```haskell
-λ> :m + Data.List.Split Data.Char Data.List
+λ> :m + Data.List.Split Data.Char Data.List Data.Attoparsec.Text Control.Monad Data.Text
 
 λ> content <- readFile "test.data"
 -- "2-4,6-8\n2-3,4-5\n5-7,7-9\n2-8,3-7\n6-6,4-6\n2-6,4-8\n"
+
+λ> r = parseInput (pack content)
+Right [Record {range1 = (2,4), range2 = (6,8)},Record {range1 = (2,3), range2 = (4,5)},Record {range1 = (5,7), range2 = (7,9)},Record {range1 = (2,8), range2 = (3,7)},Record {range1 = (6,6), range2 = (4,6)},Record {range1 = (2,6), range2 = (4,8)}]
+
+λ> Data.List.length $ fromRight [] r
+6
 
 λ> xs = lines content
 -- ["2-4,6-8","2-3,4-5","5-7,7-9","2-8,3-7","6-6,4-6","2-6,4-8"]
@@ -109,7 +115,20 @@ c  a  b  d
 +--------+
 ```
 
+See also Data.Ix with it's `range` function:
+
+```haskell
+λ> :m Data.Ix
+λ> :t range
+range :: Ix a => (a, a) -> [a]
+
+λ> range (2,10)
+[2,3,4,5,6,7,8,9,10]
+```
+
 ## References
 
+* https://jakewheat.github.io/intro_to_parsing/#getting-started
+* https://www.schoolofhaskell.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec
 * https://mmhaskell.com/blog/2018/2/26/attoparsec-the-clarity-of-do-syntax
 * http://www.mchaver.com/posts/2016-05-09-attoparsec-tutorial-1.html

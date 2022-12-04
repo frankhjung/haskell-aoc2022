@@ -46,5 +46,6 @@ test-suite            test
   build-depends:      base
                     , attoparsec >= 0.14 && < 0.15
                     , hspec >= 2.7 && < 2.9
+                    , hspec-attoparsec >= 0.1 && < 0.2
                     , split >= 0.2 && < 0.3
                     , text >= 1.2 && < 1.3
