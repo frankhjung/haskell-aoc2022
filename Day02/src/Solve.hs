@@ -86,7 +86,7 @@ score a b = result (play a b) + turn b
 
 -- | Parse string input to list of turns.
 parse :: String -> [[String]]
-parse content = map words (lines content)
+parse = map words . lines
 
 -- | == Part 1
 

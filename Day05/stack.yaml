@@ -1,0 +1,12 @@
+---
+resolver: lts-19.27
+arch: x86_64
+flags: {}
+packages: ['.']
+allow-newer: true
+extra-deps:
+  - array-0.5.4.0
+  - attoparsec-0.14.4
+  - hspec-2.8.5
+  - split-0.2.3.4
+  - text-1.2.5.0

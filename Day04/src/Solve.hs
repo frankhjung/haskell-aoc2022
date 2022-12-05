@@ -32,9 +32,7 @@ import           Data.Text            (Text, pack)
 type Range = (Int, Int)
 
 -- | Input data
-data Record = Record {
-                range1 :: Range
-              , range2 :: Range} deriving Show
+data Record = Record Range Range deriving Show
 
 -- | A Range parser.
 rangeParser :: Parser Range

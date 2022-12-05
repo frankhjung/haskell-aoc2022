@@ -159,6 +159,8 @@ cleanall: clean
 
 ## Part 2
 
+## Notes
+
 {-# START_FILE Setup.hs #-}
 import           Distribution.Simple
 main = defaultMain
@@ -175,16 +177,13 @@ License     : GPL-3
 
 module Main (main) where
 
+import           Control.Arrow      ((&&&))
 import           Solve              (solve, solve2)
 import           System.Environment (getArgs)
 
 -- Get filename from command line argument.
 main :: IO ()
-main = do
-  args <- getArgs
-  contents <- readFile (head args)
-  print (solve contents)
-  print (solve2 contents)
+main = getArgs >>= readFile . head >>= print . (solve &&& solve2)
 
 {-# START_FILE src/Solve.hs #-}
 {-|
@@ -199,13 +198,15 @@ License     : GPL-3
 module Solve ( solve
              , solve2) where
 
--- | Solve puzzle for {{name}} - part 1
-solve :: String -> Int
+type Input = String
+
+-- | Solve - part 1
+solve :: Input -> Int
 solve = sum . map read . lines
 
--- | Solve puzzle for {{name}} - part 2
-solve2 :: String -> Int
-solve2 = sum . map read . lines
+-- | Solve - part 2
+solve2 :: Input -> ()
+solve2 = const ()
 
 {-# START_FILE test/Test.hs #-}
 module Main (main) where
@@ -217,13 +218,13 @@ main :: IO ()
 main = hspec $ do
   describe "{{name}}" $ do
     context "part 1" $
-      it "expect sum of input to be 600" $ do
+      it "expect 600" $ do
         contents <- readFile "test.data"
         solve contents `shouldBe` 600
     context "part 2" $
-      it "expect sum of input to be 600" $ do
+      it "expect unit" $ do
         contents <- readFile "test.data"
-        solve2 contents `shouldBe` 600
+        solve2 contents `shouldBe` ()
 
 {-# START_FILE test.data #-}
 100
