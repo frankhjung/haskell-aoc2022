@@ -11,12 +11,14 @@ License     : GPL-3
 module Solve ( contains
              , count
              , fileParser
+             , overlaps
              , parseInput
              , Range
              , rangeParser
              , Record (..)
              , recordParser
              , solve
+             , solve2
              ) where
 
 import           Control.Monad        (void)
@@ -59,10 +61,19 @@ parseInput :: Text -> Either String [Record]
 parseInput = parseOnly (fileParser <* endOfInput)
 
 -- | Does one range contain the other?
-contains :: Range -> Range -> Bool
-contains (a,b) (c,d)
+contains :: Record -> Bool
+contains (Record (a,b) (c,d))
   | a >= c && b <= d = True
   | a <= c && b >= d = True
+  | otherwise = False
+
+-- | Does one range overlap the other?
+overlaps :: Record -> Bool
+overlaps (Record (a,b) (c,d))
+  | a <= c && c <= b = True
+  | a <= d && d <= b = True
+  | c <= a && a <= d = True
+  | c <= b && b <= d = True
   | otherwise = False
 
 -- | Count contained ranges.
@@ -76,4 +87,13 @@ solve contents = count contained
     -- get ranges from contents
     records = fromRight [] (parseInput (pack contents))
     -- test if one ranges contains the other
-    contained = fmap (\(Record r1 r2) -> contains r1 r2) records
+    contained = fmap contains records
+
+-- | Solve puzzle for Day04 - part 2
+solve2 :: String -> Int
+solve2 contents = count overlapping
+  where
+    -- get ranges from contents
+    records = fromRight [] (parseInput (pack contents))
+    -- test if one ranges contains the other
+    overlapping = fmap overlaps records

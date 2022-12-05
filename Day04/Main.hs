@@ -9,7 +9,7 @@ License     : GPL-3
 
 module Main (main) where
 
-import           Solve              (solve)
+import           Solve              (solve, solve2)
 import           System.Environment (getArgs)
 
 -- Get filename from command line argument.
@@ -18,3 +18,4 @@ main = do
   args <- getArgs
   contents <- readFile (head args)
   print (solve contents)
+  print (solve2 contents)
