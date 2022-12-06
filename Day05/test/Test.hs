@@ -1,7 +1,7 @@
 module Main (main) where
 
 import           Data.Array (elems)
-import           Solve      (Move (..), parse, solve)
+import           Solve      (Move (..), parse, solve, solve2)
 import           Test.Hspec (context, describe, hspec, it, shouldBe)
 
 main :: IO ()
@@ -26,3 +26,8 @@ main = hspec $ do
       it "expect crates CMZ" $ do
         contents <- readFile "test.data"
         solve contents `shouldBe` "CMZ"
+
+    context "part 2" $
+      it "expect crates MCD" $ do
+        contents <- readFile "test.data"
+        solve2 contents `shouldBe` "MCD"

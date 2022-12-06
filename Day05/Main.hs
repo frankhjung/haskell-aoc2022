@@ -9,12 +9,10 @@ License     : GPL-3
 
 module Main (main) where
 
--- import Control.Arrow ((&&&))
--- import           Solve              (solve, solve2)
-import           Solve              (solve)
+import           Control.Arrow      ((&&&))
+import           Solve              (solve, solve2)
 import           System.Environment (getArgs)
 
 -- Get filename from command line argument.
 main :: IO ()
-main = getArgs >>= readFile . head >>= print . solve
--- main = getArgs >>= readFile . head >>= print . (solve &&& solve2)
+main = getArgs >>= readFile . head >>= print . (solve &&& solve2)

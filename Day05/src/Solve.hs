@@ -11,6 +11,7 @@ License     : GPL-3
 module Solve ( every
              , Move (..)
              , apply
+             , apply2
              , mkStack
              , parseMoves
              , parse
@@ -105,8 +106,8 @@ parseMoves = parseOnly (fileParser <* endOfInput)
 -- array (1,3) [(1,(1,"CM")),(2,(2,"DNZ")),(3,(3,"P"))]
 -- @
 apply :: Stacks -> Move -> Stacks
-apply s m =
-  let
+apply s m = s // [(fi,(fi,from)),(ti,(ti,to))]
+  where
     fi = _from m
     ti = _to m
     f = snd (s ! fi)
@@ -114,12 +115,12 @@ apply s m =
     c = _count m
     to = foldr (:) t (reverse (take c f))
     from = drop c f
-  in
-    s // [(fi,(fi,from)),(ti,(ti,to))]
 
 -- | == Parse
 
 -- | Read input into a stack of crates and a list of moves.
+-- Parse creates by processing rows of strings and transposing to stacks.
+-- Parse moves using attoparsec into a list of moves.
 parse :: String -> (Stacks, [Move])
 parse contents =
   let
@@ -138,13 +139,30 @@ parse contents =
 
 -- | Solve - part 1
 solve :: Input -> String
-solve content = let
-          (stacks, moves) = parse content
-          -- apply moves to crates in stacks
-          stacks' = foldl' apply stacks moves
-        in
-          head . snd <$> elems stacks'
+solve content = head . snd <$> elems stacks'
+  where
+    (stacks, moves) = parse content
+    -- apply moves to crates in stacks
+    stacks' = foldl' apply stacks moves
+
+-- | == Part 2
+
+-- Lift and shift partial stack of crates rather than one by one.
+apply2 :: Stacks -> Move -> Stacks
+apply2 s m = s // [(fi,(fi,from)),(ti,(ti,to))]
+  where
+    fi = _from m
+    ti = _to m
+    f = snd (s ! fi)
+    t = snd (s ! ti)
+    c = _count m
+    to = foldr (:) t (take c f)
+    from = drop c f
 
 -- | Solve - part 2
-solve2 :: Input -> ()
-solve2 = const ()
+solve2 :: Input -> String
+solve2 content = head . snd <$> elems stacks'
+  where
+    (stacks, moves) = parse content
+    -- apply moves to crates in stacks
+    stacks' = foldl' apply2 stacks moves
