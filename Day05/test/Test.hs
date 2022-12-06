@@ -13,7 +13,7 @@ main = hspec $ do
       it "expect stacks NZ,DCM,P" $ do
         contents <- readFile "test.data"
         let (stacks, _) = parse contents
-        elems stacks `shouldBe` [(1,"NZ"),(2,"DCM"),(3,"P")]
+        elems stacks `shouldBe` ["NZ","DCM","P"]
 
     context "parse move input" $
       it "expect Move 1 2 1" $ do

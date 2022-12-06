@@ -272,6 +272,17 @@ array (1,3) [(1,(1,"ZNDCM")),(2,(2,"")),(3,(3,"P"))]
 
 ```
 
+Compare this to `accumArray`:
+
+```haskell
+*Main Solve Data.Array Data.List Data.Char
+λ> s
+array (1,3) [(1,"NZ"),(2,"DCM"),(3,"P")]
+
+λ> accumArray (flip (++)) (s!1) (1,1) [(1, reverse $ take 3 (s!2))]
+array (1,1) [(1,"MCDNZ")]
+```
+
 ### Puzzle input:
 
 ```text

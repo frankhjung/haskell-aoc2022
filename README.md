@@ -8,7 +8,9 @@ Copyright © 2022 Frank H Jung
 * [Day 4 - Camp Cleanup](Day04/README.md)
 * [Day 5 - Supply Stacks](Day05/README.md)
 * [Day 6 - Tuning Trouble](Day06/README.md)
+* [Day 7 - No Space Left On Device](Day07/README.md)
 * [Day 8 - Treetop Tree House](Day08/README.md)
+* [Day 9 - Rope Bridge](Day09/README.md)
 
 ## Create Advent of Code Day from Template
 
@@ -29,7 +31,15 @@ As a single command:
 day=DayNN; stack new ${day} template/day.hsfiles; cd ${day}; make
 ```
 
-The default make target will perform: `check`, `build`, `test` and `exec`
+The default make target will perform: `check`, `build`, `test` and `exec`.
+
+## Hints
+
+To clean up all directories:
+
+```bash
+for f in $(find . -maxdepth 1 -name "Day*" -type d); do make -C $f clean ; done
+```
 
 Other build targets are:
 
