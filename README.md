@@ -7,6 +7,7 @@ Copyright © 2022 Frank H Jung
 * [Day 3 - Rucksack Reorganisation](Day03/README.md)
 * [Day 4 - Camp Cleanup](Day04/README.md)
 * [Day 5 - Supply Stacks](Day05/README.md)
+* [Day 6 - Tuning Trouble](Day06/README.md)
 
 ## Create Advent of Code Day from Template
 
