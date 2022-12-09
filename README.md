@@ -8,6 +8,7 @@ Copyright © 2022 Frank H Jung
 * [Day 4 - Camp Cleanup](Day04/README.md)
 * [Day 5 - Supply Stacks](Day05/README.md)
 * [Day 6 - Tuning Trouble](Day06/README.md)
+* [Day 8 - Treetop Tree House](Day08/README.md)
 
 ## Create Advent of Code Day from Template
 

@@ -1,0 +1,9 @@
+---
+resolver: lts-19.27
+arch: x86_64
+flags: {}
+packages: ['.']
+allow-newer: true
+extra-deps:
+  - array-0.5.4.0
+  - hspec-2.8.5
