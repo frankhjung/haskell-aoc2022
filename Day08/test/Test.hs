@@ -2,7 +2,8 @@ module Main (main) where
 
 import           Data.Array (Array, listArray)
 import           Solve      (countPerimeter, isBot, isLeft, isRight, isTop,
-                             solve, solve2)
+                             solve, solve2, viewsDown, viewsLeft, viewsRight,
+                             viewsUp)
 import           Test.Hspec (context, describe, hspec, it, shouldBe)
 
 {-
@@ -81,7 +82,26 @@ main = hspec $ do
       it "expect 21: 16 perimeter + 5 visible" $ do
         contents <- readFile "test.data"
         solve contents `shouldBe` 21
+
+    context "views from middle 5" $ do
+      it "row 25512 distance is 1 up" $
+        viewsUp (1,2) as `shouldBe` 1
+      it "row 25512 distance is 1 left" $
+        viewsLeft (1,2) as `shouldBe` 1
+      it "row 25512 distance is 2 right" $
+        viewsRight (1,2) as `shouldBe` 2
+      it "row 25512 distance is 2 down" $
+        viewsDown (1,2) as `shouldBe` 2
+    context "views from middle 5" $ do
+      it "row 33549 distance up is 2" $
+        viewsUp (3,2) as `shouldBe` 2
+      it "row 33549 distance left is 2" $
+        viewsLeft (3,2) as `shouldBe` 2
+      it "row 33549 distance down is 1" $
+        viewsDown (3,2) as `shouldBe` 1
+      it "row 33549 distance right is 2" $
+        viewsRight (3,2) as `shouldBe` 2
     context "part 2" $
-      it "expect unit" $ do
+      it "expect 8" $ do
         contents <- readFile "test.data"
-        solve2 contents `shouldBe` ()
+        solve2 contents `shouldBe` 8
