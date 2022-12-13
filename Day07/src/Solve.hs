@@ -10,7 +10,9 @@ License     : GPL-3
 
 -}
 
-module Solve ( cdParser
+module Solve ( count
+             , count2
+             , cdParser
              , dirParser
              , fileParser
              , lineParser
@@ -36,9 +38,10 @@ import           Data.Attoparsec.Text (Parser, decimal, endOfInput, endOfLine,
                                        isEndOfLine, many', parseOnly, space,
                                        string, takeTill, try)
 import           Data.Either          (fromRight)
-import           Data.List            (tails)
+import           Data.List            (find, sort, tails)
 import           Data.Map             (Map)
 import           Data.Map             as M (elems, empty, fromList, unionsWith)
+import           Data.Maybe           (fromMaybe)
 import           Data.Text            (Text, pack)
 
 type Input = String
@@ -153,6 +156,15 @@ count = sum . filter (<= 100000) . elems
 solve :: Input -> Integer
 solve = count . build . parse
 
+count2 :: DirMap -> Integer
+count2 dirmap =
+  let
+    dirsizes = sort $ elems dirmap
+    spare = 70000000 - last dirsizes
+    best = find (\s -> spare + s >= 30000000) dirsizes
+  in
+    fromMaybe 0 best
+
 -- | Solve - part 2
-solve2 :: Input -> ()
-solve2 = const ()
+solve2 :: Input -> Integer
+solve2 = count2 . build . parse

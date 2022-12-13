@@ -63,6 +63,6 @@ main = hspec $ do
         contents <- readFile "test.data"
         solve contents `shouldBe` 95437
     context "part 2" $
-      it "expect unit" $ do
+      it "expect 24933642" $ do
         contents <- readFile "test.data"
-        solve2 contents `shouldBe` ()
+        solve2 contents `shouldBe` 24933642
