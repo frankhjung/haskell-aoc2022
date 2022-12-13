@@ -157,11 +157,11 @@ solve :: Input -> Integer
 solve = count . build . parse
 
 count2 :: DirMap -> Integer
-count2 dirmap =
+count2 dirs =
   let
-    dirsizes = sort $ elems dirmap
-    spare = 70000000 - last dirsizes
-    best = find (\s -> spare + s >= 30000000) dirsizes
+    sizes = sort $ elems dirs
+    spare = 70000000 - last sizes
+    best = find ((>= 30000000) . (spare +)) sizes
   in
     fromMaybe 0 best
 
