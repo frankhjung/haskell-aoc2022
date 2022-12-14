@@ -16,7 +16,7 @@ module Solve ( parse
              , uParser
              , dParser
              , move
-             , moveHeadTail
+             , moveBody
              , moveHead
              , moveTail
              , isDiagonal
@@ -40,7 +40,6 @@ import           Data.Foldable        (foldl')
 import           Data.Set             (Set)
 import           Data.Set             as S (empty, insert, size)
 import           Data.Text            (Text, pack)
-import           Prelude              hiding (Left, Right)
 
 type Input = String
 
@@ -52,8 +51,8 @@ type Location = (Int, Int)
 
 -- | 2D Grid that we are navigating across.
 -- Assume we start at the origin (0,0).
-data Position = Position { phead   :: Location        -- ^ elfs head location
-                         , ptail   :: Location        -- ^ elfs tail location
+data Position = Position { phead   :: Location      -- ^ head location
+                         , ptails  :: [Location]    -- ^ tail location
                          , visited :: Set Location  -- ^ have visited location
                          } deriving (Show, Eq)
 
@@ -101,18 +100,19 @@ parseContents = parseOnly (many' lineParser <* endOfInput)
 parse :: String -> [Move]
 parse = concat . fromRight [] . parseContents . pack
 
--- -- | Move head. Optionally move tail.
-move :: [Move] -> Position
-move = foldl' moveHeadTail (Position (0,0) (0,0) S.empty)
+-- | Move head. Optionally move tail.
+-- First parameter is number of tails.
+move :: Int -> [Move] -> Position
+move n = foldl' moveBody (Position (0,0) (replicate n (0,0)) S.empty)
 
--- -- | Apply move to head and tail.
-moveHeadTail :: Position -> Move -> Position
-moveHeadTail (Position h t visits) (n,m) =
+-- | Apply move to head and tail.
+moveBody :: Position -> Move -> Position
+moveBody (Position h ts visits) (n,m) =
   let
     (x,y) = moveHead h (n,m)
-    (v,w) = moveTail t (x,y)
+    ts' = tail $ scanl moveTail (x,y) ts -- move tails
   in
-    Position (x,y) (v,w) (S.insert (v,w) visits)
+    Position (x,y) ts' (S.insert (last ts') visits)
 
 -- | Move head once: left, right up or down.
 moveHead :: Location        -- ^ head
@@ -121,10 +121,10 @@ moveHead :: Location        -- ^ head
 moveHead (x,y) (n,m) = (x+n, y+m)
 
 -- | Catchup tail to head.
-moveTail :: Location        -- ^ tail
-            -> Location     -- ^ head
+moveTail :: Location        -- ^ head / previous tail
+            -> Location     -- ^ tail
             -> Location     -- ^ new tail location
-moveTail (v,w) (x,y)
+moveTail (x,y) (v,w)
   | isHorizontal (x,y) (v,w) = (v+v', w   )
   | isVertical   (x,y) (v,w) = (v   , w+w')
   | isDiagonal   (x,y) (v,w) = (v+v', w+w')
@@ -140,12 +140,14 @@ isVertical :: Location -> Location -> Bool
 isVertical (x,y) (v,w) = abs (y-w) == 2 && x == v
 
 isDiagonal :: Location -> Location -> Bool
-isDiagonal (x,y) (v,w) = abs (x-v) + abs (y-w) == 3
+isDiagonal (x,y) (v,w) = abs (x-v) + abs (y-w) >= 3
 
 -- | Solve - part 1 (6057)
 solve :: Input -> Int
-solve = S.size . visited . move . parse
+-- with 1 tail ...
+solve = S.size . visited . move 1 . parse
 
--- | Solve - part 2
-solve2 :: Input -> ()
-solve2 = const ()
+-- | Solve - part 2 (2514)
+-- with 9 tails ...
+solve2 :: Input -> Int
+solve2 = S.size . visited . move 9 . parse
