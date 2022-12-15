@@ -11,6 +11,7 @@ Copyright © 2022 Frank H Jung
 * [Day 7 - No Space Left On Device](Day07/README.md)
 * [Day 8 - Treetop Tree House](Day08/README.md)
 * [Day 9 - Rope Bridge](Day09/README.md)
+* [Day 10 - Cathode-Ray Tube](Day10/README.md)
 
 ## Create Advent of Code Day from Template
 

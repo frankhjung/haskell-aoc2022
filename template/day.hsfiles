@@ -194,9 +194,9 @@ main :: IO ()
 main = getArgs >>= readFile . head >>= print . (solve &&& solve2)
 
 {-# START_FILE src/Solve.hs #-}
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections     #-}
+-- {-# LANGUAGE FlexibleContexts  #-}
+-- {-# LANGUAGE OverloadedStrings #-}
+-- {-# LANGUAGE TupleSections     #-}
 {-|
 
 Module      : Solve

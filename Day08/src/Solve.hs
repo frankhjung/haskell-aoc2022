@@ -26,7 +26,6 @@ module Solve ( count
              , viewsDown
              ) where
 
--- import           Control.Monad (ap)
 import           Data.Array (Array, bounds, listArray, (!))
 import           Data.Char  (digitToInt)
 import           Data.Ix    (range)
