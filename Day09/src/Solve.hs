@@ -11,10 +11,10 @@ License     : GPL-3
 module Solve ( parse
              , parseContents
              , lineParser
-             , rParser
-             , lParser
-             , uParser
-             , dParser
+             , rightParser
+             , leftParser
+             , upParser
+             , downParser
              , move
              , moveBody
              , moveHead
@@ -34,7 +34,7 @@ import           Control.Applicative  ((<|>))
 import           Control.Monad        (void)
 import           Data.Attoparsec.Text (Parser, decimal, endOfInput, endOfLine,
                                        isEndOfLine, many', parseOnly, skipSpace,
-                                       skipWhile, string, try)
+                                       skipWhile, string)
 import           Data.Either          (fromRight)
 import           Data.Foldable        (foldl')
 import           Data.Set             (Set)
@@ -58,32 +58,32 @@ data Position = Position { phead   :: Location      -- ^ head location
 
 -- | == Parsers
 
-rParser :: Parser [Move]
-rParser = do
+rightParser :: Parser [Move]
+rightParser = do
   void $ string "R"
   skipSpace
   distance <- decimal
   skipWhile (not . isEndOfLine)
   return (replicate distance (1, 0))
 
-lParser :: Parser [Move]
-lParser = do
+leftParser :: Parser [Move]
+leftParser = do
   void $ string "L"
   skipSpace
   distance <- decimal
   skipWhile (not . isEndOfLine)
   return (replicate distance (-1, 0))
 
-uParser :: Parser [Move]
-uParser = do
+upParser :: Parser [Move]
+upParser = do
   void $ string "U"
   skipSpace
   distance <- decimal
   skipWhile (not . isEndOfLine)
   return (replicate distance (0, 1))
 
-dParser :: Parser [Move]
-dParser = do
+downParser :: Parser [Move]
+downParser = do
   void $ string "D"
   skipSpace
   distance <- decimal
@@ -92,7 +92,7 @@ dParser = do
 
 -- | Parse moves from input.
 lineParser :: Parser [Move]
-lineParser = (try rParser <|> lParser <|> uParser <|> dParser) <* endOfLine
+lineParser = (rightParser <|> leftParser <|> upParser <|> downParser) <* endOfLine
 
 parseContents :: Text -> Either String [[Move]]
 parseContents = parseOnly (many' lineParser <* endOfInput)

@@ -34,8 +34,8 @@ import           Control.Applicative  ((<|>))
 import           Control.Monad        (void)
 import           Control.Monad.State  (State, evalState, get, put)
 import           Data.Attoparsec.Text (Parser, decimal, endOfInput, endOfLine,
-                                       isEndOfLine, many', parseOnly, signed,
-                                       skipSpace, skipWhile, string, try)
+                                       many', parseOnly, signed, skipSpace,
+                                       string)
 import           Data.Either          (fromRight)
 import           Data.Text            (Text, pack)
 
@@ -50,7 +50,6 @@ data Instruction = Noop | Addx Int deriving (Show)
 noopParser :: Parser Instruction
 noopParser = do
   void $ string "noop"
-  skipWhile (not . isEndOfLine)
   return Noop
 
 addxParser :: Parser Instruction
@@ -58,12 +57,10 @@ addxParser = do
   void $ string "addx"
   skipSpace
   x <- signed decimal
-  skipWhile (not . isEndOfLine)
   return (Addx x)
 
--- | Parse moves from input.
 lineParser :: Parser Instruction
-lineParser = (try noopParser <|> addxParser) <* endOfLine
+lineParser = (noopParser <|> addxParser) <* endOfLine
 
 parseInput :: Text -> Either String [Instruction]
 parseInput = parseOnly (many' lineParser <* endOfInput)
@@ -78,7 +75,7 @@ type Register = Int
 type Sprite = Char
 
 --- | Current cycle and register value.
-type Current = (Cycle, Register, Sprite)
+type Current = (Cycle, Register)
 
 -- | Instruction dump is history of register by cycle.
 type Dump = [(Cycle, Register, Sprite)]
@@ -90,7 +87,7 @@ type InstructionState = ( Current -- ^ state for current instruction
 
 -- | Initial state.
 startState :: InstructionState
-startState = ((0,1,'#'), [])
+startState = ((0,1), [])
 
 -- | Run program recording outcome for each cycle.
 run :: [Instruction] -> Dump
@@ -107,18 +104,18 @@ runInstruction [] = do        -- finished running the program
   return dump                 -- update program dump
 
 runInstruction (i:is) = do
-  ((c,r,_), dump) <- get
+  ((c,r), dump) <- get      -- only need cycle and register
   let
     c' = c+1                  -- increment cycle
     s = setSprite c' r        -- determine sprite character for first cycle
   case i of
-    Noop   -> put ((c',r,s), (c',r,s):dump)
+    Noop   -> put ((c',r), (c',r,s):dump)
     Addx x -> let
                 dump' = (c',r,s):dump     -- first cycle of addx instruction
                 s' = setSprite (c'+1) r   -- set sprite for second cycle
                 r' = r+x                  -- update register at end of second cycle
               in
-                put ((c'+1,r',s'), (c'+1,r,s'):dump') -- update next cycle
+                put ((c'+1,r'), (c'+1,r,s'):dump') -- update with second cycle
   runInstruction is
 
 -- | Extract cycle and register values from dump.
@@ -141,9 +138,12 @@ solve = count . run . parse
 
 -- | Extract sprites from dump.
 getSprites :: Dump -> [Sprite]
-getSprites []           = []
-getSprites ((_,_,s):ds) = s:getSprites ds
+getSprites = reverse . go
+  where
+    go :: Dump -> [Sprite]
+    go []           = []
+    go ((_,_,s):ds) = s:go ds
 
 -- | Solve - part 2 (PGPHBEAB)
 solve2 :: Input -> [Sprite]
-solve2 = reverse . getSprites . run . parse
+solve2 = getSprites . run . parse
