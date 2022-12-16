@@ -36,7 +36,9 @@ test:
 
 .PHONY: exec
 exec:
-	@echo exec ...
+	@echo test data ...
+	@stack exec main test.data
+	@echo input data ...
 	@stack exec main input.data
 
 .PHONY: setup

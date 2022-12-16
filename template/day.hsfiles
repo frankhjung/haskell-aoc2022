@@ -209,6 +209,7 @@ License     : GPL-3
 module Solve ( solve
              , solve2) where
 
+-- | Our input data type.
 type Input = String
 
 -- | Solve - part 1

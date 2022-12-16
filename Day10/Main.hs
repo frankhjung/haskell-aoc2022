@@ -9,10 +9,14 @@ License     : GPL-3
 
 module Main (main) where
 
-import           Control.Arrow      ((&&&))
+import           Data.List.Split    (chunksOf)
 import           Solve              (solve, solve2)
 import           System.Environment (getArgs)
 
 -- Get filename from command line argument.
 main :: IO ()
-main = getArgs >>= readFile . head >>= print . (solve &&& solve2)
+main = do
+  args <- getArgs
+  contents <- readFile (head args)
+  print (solve contents)
+  mapM_ print (chunksOf 40 (solve2 contents))

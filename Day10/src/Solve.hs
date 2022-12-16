@@ -11,18 +11,23 @@ License     : GPL-3
 module Solve ( addxParser
              , noopParser
              , lineParser
-             , parseContents
+             , parseInput
              , parse
              , startState
              , run
              , runInstruction
+             , getCounts
+             , count
              , solve
+             , setSprite
+             , getSprites
              , solve2
-             , Program (..)
+             , Instruction (..)
              , Dump
              , Cycle
              , Register
-             , ProgramState
+             , Sprite
+             , InstructionState
              ) where
 
 import           Control.Applicative  ((<|>))
@@ -34,20 +39,21 @@ import           Data.Attoparsec.Text (Parser, decimal, endOfInput, endOfLine,
 import           Data.Either          (fromRight)
 import           Data.Text            (Text, pack)
 
+-- | Our input data type.
 type Input = String
 
 -- | A program consists of these two instructions.
-data Program = Noop | Addx Int deriving (Show)
+data Instruction = Noop | Addx Int deriving (Show)
 
 -- | == Parsers
 
-noopParser :: Parser Program
+noopParser :: Parser Instruction
 noopParser = do
   void $ string "noop"
   skipWhile (not . isEndOfLine)
   return Noop
 
-addxParser :: Parser Program
+addxParser :: Parser Instruction
 addxParser = do
   void $ string "addx"
   skipSpace
@@ -56,67 +62,88 @@ addxParser = do
   return (Addx x)
 
 -- | Parse moves from input.
-lineParser :: Parser Program
+lineParser :: Parser Instruction
 lineParser = (try noopParser <|> addxParser) <* endOfLine
 
-parseContents :: Text -> Either String [Program]
-parseContents = parseOnly (many' lineParser <* endOfInput)
+parseInput :: Text -> Either String [Instruction]
+parseInput = parseOnly (many' lineParser <* endOfInput)
 
-parse :: String -> [Program]
-parse = fromRight [] . parseContents . pack
+parse :: Input -> [Instruction]
+parse = fromRight [] . parseInput . pack
 
 -- | == State
 
 type Cycle = Int
 type Register = Int
+type Sprite = Char
 
---- | Current working directory, and accumulated size.
--- Cycle
-type Current = (Cycle, Register)
+--- | Current cycle and register value.
+type Current = (Cycle, Register, Sprite)
 
--- | Program dump is history of register by cycle.
-type Dump = [(Cycle, Register)]
+-- | Instruction dump is history of register by cycle.
+type Dump = [(Cycle, Register, Sprite)]
 
--- | Program state.
-type ProgramState = ( Current -- ^ state for current instruction
-                    , Dump    -- ^ program dump
-                    )
+-- | Instruction state.
+type InstructionState = ( Current -- ^ state for current instruction
+                        , Dump    -- ^ program dump
+                        )
 
 -- | Initial state.
-startState :: ProgramState
-startState = ((0,1), [])
+startState :: InstructionState
+startState = ((0,1,'#'), [])
 
 -- | Run program recording outcome for each cycle.
--- run :: [Program] -> [Register]
-run :: [Program] -> Dump
+run :: [Instruction] -> Dump
 run is = evalState (runInstruction is) startState
 
--- | Run instruction.
-runInstruction :: [Program] -> State ProgramState Dump
+-- | Set sprite as lit pixel or a space (as easier to read than a period).
+setSprite :: Cycle -> Register -> Sprite
+setSprite c r = if ((c-1) `mod` 40) `elem` [r-1,r,r+1] then '#' else ' '
+
+-- | Recursively run instructions until end of input.
+runInstruction :: [Instruction] -> State InstructionState Dump
 runInstruction [] = do        -- finished running the program
   (_, dump) <- get
   return dump                 -- update program dump
 
 runInstruction (i:is) = do
-  ((c,r), dump) <- get
+  ((c,r,_), dump) <- get
+  let
+    c' = c+1                  -- increment cycle
+    s = setSprite c' r        -- determine sprite character for first cycle
   case i of
-    Noop   -> put ((succ c,r), (succ c,r):dump)
+    Noop   -> put ((c',r,s), (c',r,s):dump)
     Addx x -> let
-                c' = succ c
-                dump' = (c',r):dump   -- first cycle of addx instruction
-                r' = r+x              -- second cycle of addx, update register
+                dump' = (c',r,s):dump     -- first cycle of addx instruction
+                s' = setSprite (c'+1) r   -- set sprite for second cycle
+                r' = r+x                  -- update register at end of second cycle
               in
-                put ((succ c',r'), (succ c',r):dump')
+                put ((c'+1,r',s'), (c'+1,r,s'):dump') -- update next cycle
   runInstruction is
 
--- | Count results for solution
-count :: Dump -> Int
-count = sum . map (uncurry (*)) . filter ((`elem` [20,60,100,140,180,220]) . fst)
+-- | Extract cycle and register values from dump.
+getCounts :: Dump -> [(Cycle, Register)]
+getCounts []           = []
+getCounts ((c,r,_):ds) = (c,r):getCounts ds
 
--- | Solve - part 1
+clockCycles :: [Cycle]
+clockCycles = [20,60,100,140,180,220]
+
+-- | Count results for solution.
+count :: Dump -> Int
+count = sum . map (uncurry (*)) . filter ((`elem` clockCycles) . fst) . getCounts
+
+-- | Solve - part 1 (13520)
 solve :: Input -> Int
 solve = count . run . parse
 
--- | Solve - part 2
-solve2 :: Input -> ()
-solve2 = const ()
+-- | == Part 2
+
+-- | Extract sprites from dump.
+getSprites :: Dump -> [Sprite]
+getSprites []           = []
+getSprites ((_,_,s):ds) = s:getSprites ds
+
+-- | Solve - part 2 (PGPHBEAB)
+solve2 :: Input -> [Sprite]
+solve2 = reverse . getSprites . run . parse
