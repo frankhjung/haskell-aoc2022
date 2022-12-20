@@ -13,6 +13,7 @@ Copyright © 2022 Frank H Jung
 * [Day 9 - Rope Bridge](Day09/README.md)
 * [Day 10 - Cathode-Ray Tube](Day10/README.md)
 * [Day 11 - Monkey in the Middle](Day11/README.md)
+* [Day 12 - Hill Climbing Algorithm](Day12/README.md)
 
 ## Create Advent of Code Day from Template
 

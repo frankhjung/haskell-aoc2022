@@ -2,7 +2,7 @@
 {-|
 
 Module      : Solve
-Description : Advent of Code 2022 Day11
+Description : Advent of Code 2022 Day 11
 Copyright   : © Frank Jung, 2022
 License     : GPL-3
 
@@ -31,7 +31,6 @@ module Solve ( Id
              , round
              , round2
              , score
-             , score2
              , solve
              , solve2
              , throw
@@ -182,14 +181,22 @@ parse = go . fromRight [] . parseInput . pack
 
 -- | Score:
 -- Get score of the two monkey's that have thrown the most.
-score :: MonkeyMap -> Int
-score = product . take 2 . sortOn Down . levels
+score :: MonkeyMap -> Integer
+score = product . map toInteger . take 2 . sortOn Down . levels
   where
     levels :: MonkeyMap -> [Int]
     levels ls = map _throws (elems ls)
 
 -- | Round:
 -- A round performs n throws.
+--
+-- TODO
+--
+-- Replace ThrowMap -> MonkeyMap with tuple (Adjustment, ThrowMap, MonkeyMap)
+-- Where Adjustment is a partial function: @(Int -> Int) -> Int@
+-- Part 1 = @flip div 3@
+-- Part 2 = @flip rem (product of divisors)@
+-- This should reduce the code ... (or Monad Transformer, State Monad?)
 round :: Int -> (MonkeyMap, ThrowMap) -> MonkeyMap
 round n (m,t) = last $ take (succ n) $ iterate (turn t) m
 
@@ -243,18 +250,10 @@ getMonkeyId :: WorryLevel -> Throw -> Id
 getMonkeyId w t = if w `mod` _div t == 0 then _true t else _false t
 
 -- | Solve - part 1 (58794)
-solve :: Input -> Int
+solve :: Input -> Integer
 solve = score . round 20 . parse
 
 -- | == Part 2
-
--- | Score:
--- Get score of the two monkey's that have thrown the most.
-score2 :: MonkeyMap -> Integer
-score2 = product . map toInteger . take 2 . sortOn Down . levels
-  where
-    levels :: MonkeyMap -> [Int]
-    levels ls = map _throws (elems ls)
 
 -- | Round2:
 -- A round performs n throws.
@@ -286,9 +285,9 @@ throw2 ts i (Monkey (w:<|ws) s) ms =
 -- | worry2:
 -- Update worry level - part 2
 --
--- Id is money whose throw rules we use.
--- WorryLevel is current value to inspect.
--- A updated monkey map is returned with monkey been thrown to.
+-- - Id is monkey whose throw rules we use.
+-- - WorryLevel is from the current item being inspected.
+-- - A updated map is returned with monkey been thrown to.
 worry2 :: ThrowMap -> Id -> WorryLevel -> MonkeyMap -> MonkeyMap
 worry2 ts i w = M.adjust (addWorry w'') i'  -- update monkey catching item
   where
@@ -299,6 +298,6 @@ worry2 ts i w = M.adjust (addWorry w'') i'  -- update monkey catching item
     worryAdjust :: ThrowMap -> Id           -- worry adjustment value.
     worryAdjust = M.foldr ((*) . _div) 1    -- product of all divisors
 
--- | Solve - part 2
+-- | Solve - part 2 (20151213744)
 solve2 :: Input -> Integer
-solve2 = score2 . round2 10000 . parse
+solve2 = score . round2 10000 . parse
