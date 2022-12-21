@@ -11,6 +11,6 @@ main = hspec $ do
         contents <- readFile "test.data"
         solve contents `shouldBe` 31
     context "part 2" $
-      it "expect unit" $ do
+      it "expect 31 steps from `a` to E" $ do
         contents <- readFile "test.data"
-        solve2 contents `shouldBe` ()
+        solve2 contents `shouldBe` 29

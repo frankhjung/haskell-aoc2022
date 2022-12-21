@@ -103,6 +103,7 @@ countInner as = length $ filter (==True) visible
 count :: Array (Int,Int) Int -> Int
 count as = countPerimeter as + countInner as
 
+-- | Count all trees that can be viewed from any direction.
 countViews :: Array (Int,Int) Int -> [Int]
 countViews as =
   let
