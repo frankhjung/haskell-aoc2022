@@ -103,7 +103,7 @@ elevation `a` to the location that should get the best signal?
 - build all valid paths
 - starts at `S`
 - a valid path is one that
-  - we have not visited and 
+  - we have not visited, and
   - is strictly <= 1 elevation difference to current (higher or lower)
 - ends at `E`
 - get by path lengths

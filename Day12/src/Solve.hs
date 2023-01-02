@@ -77,7 +77,7 @@ validMoves hs (x, y) = do
   let
     x' = x + dx               -- new x
     y' = y + dy               -- new y
-    (mx, my) = snd (bounds hs)
+    (mx, my) = snd (bounds hs) -- maximum bounds
   guard $ dx == 0 || dy == 0  -- no diagonals
   guard $ dx /= dy            -- has moved given that both can not be zero
   guard $ inRange (0, mx) x'  -- x' in bounds

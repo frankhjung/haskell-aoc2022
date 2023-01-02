@@ -5,12 +5,12 @@ import           Test.Hspec (context, describe, hspec, it, shouldBe)
 
 main :: IO ()
 main = hspec $ do
-  describe "Day12" $ do
+  describe "Day13" $ do
     context "part 1" $
-      it "expect 31 steps from S to E" $ do
+      it "expect 13" $ do
         contents <- readFile "test.data"
-        solve contents `shouldBe` 31
+        solve contents `shouldBe` 13
     context "part 2" $
-      it "expect 29 steps from `a` to E" $ do
+      it "expect unit" $ do
         contents <- readFile "test.data"
-        solve2 contents `shouldBe` 29
+        solve2 contents `shouldBe` ()
